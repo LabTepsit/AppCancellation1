@@ -38,7 +38,8 @@ namespace AppCancellation1
             for (int i = 0; i < max; i++)
             {
                 Thread.Sleep(delay);
-               Dispatcher.Invoke(()=> UpdateUI(i));
+                Dispatcher.Invoke(() => UpdateUI(i));
+
             }
         }
 
