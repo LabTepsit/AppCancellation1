@@ -26,11 +26,13 @@ namespace AppCancellation1
             InitializeComponent();
         }
 
+        CancellationTokenSource ct = new CancellationTokenSource();
+
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
             int max = Convert.ToInt32(txtMax.Text);
             int delay = Convert.ToInt32(txtdelay.Text);
-            Task.Factory.StartNew(()=>DoWork(max, delay,lblCount));
+            Task.Factory.StartNew(()=>DoWork(max, delay,lblCount, ct));
         }
 
         //private void DoWork(int max, int delay)
@@ -43,13 +45,16 @@ namespace AppCancellation1
         //    }
         //}
 
-        private void DoWork(int max, int delay, Label lbl)
+        private void DoWork(int max, int delay, Label lbl, CancellationTokenSource ct)
         {
+            if (ct == null)
+                ct = new CancellationTokenSource();
             for (int i = 0; i < max; i++)
             {
                 Thread.Sleep(delay);
                 Dispatcher.Invoke(() => UpdateUI(i,lbl));
-
+                if(ct.Token.IsCancellationRequested)
+                { break; }
             }
         }
 
@@ -66,7 +71,17 @@ namespace AppCancellation1
     private void Btn2_Click(object sender, RoutedEventArgs e)
         {
             int max = Convert.ToInt32(txtMax1.Text);
-            Task.Factory.StartNew(()=>DoWork(max, 1000, lblCount1));
+            Task.Factory.StartNew(()=>DoWork(max, 1000, lblCount1, ct));
+        }
+
+        private void btnStop_Click(object sender, RoutedEventArgs e)
+        {
+            if(ct!=null)
+            {
+                ct.Cancel();
+                ct = null;
+            }
+            
         }
     }
 }
