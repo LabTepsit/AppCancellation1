@@ -25,7 +25,7 @@ namespace AppCancellation1
         {
             InitializeComponent();
         }
-
+        bool stop = true;
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
             int max = Convert.ToInt32(txtMax.Text);
@@ -35,17 +35,25 @@ namespace AppCancellation1
 
         private void DoWork(int max, int delay)
         {
+            stop = true;
             for (int i = 0; i < max; i++)
             {
                 Thread.Sleep(delay);
                 Dispatcher.Invoke(() => UpdateUI(i));
-
+                if (stop)
+                    break;
             }
         }
 
         private void UpdateUI(int i)
         {
             lblCount.Content = i;
+
+        }
+
+        private void btnStop_Click(object sender, RoutedEventArgs e)
+        {
+           stop = true;
         }
     }
 }
