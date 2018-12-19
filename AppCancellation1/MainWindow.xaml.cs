@@ -25,27 +25,56 @@ namespace AppCancellation1
         {
             InitializeComponent();
         }
-
+        bool stop = false;
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
+            
             int max = Convert.ToInt32(txtMax.Text);
             int delay = Convert.ToInt32(txtdelay.Text);
-            Task.Factory.StartNew(()=>DoWork(max, delay));
+            Task.Factory.StartNew(()=>DoWork(max, delay, lblCount));
+            
         }
 
-        private void DoWork(int max, int delay)
+        //private void DoWork(int max, int delay)
+        //{
+        //    for (int i = 0; i < max; i++)
+        //    {
+        //        Thread.Sleep(delay);
+        //        Dispatcher.Invoke(() => UpdateUI(i));
+
+        //    }
+        //}
+        private void DoWork(int max, int delay, Label lbl)
         {
+            stop = false;
             for (int i = 0; i < max; i++)
             {
                 Thread.Sleep(delay);
-                Dispatcher.Invoke(() => UpdateUI(i));
+                Dispatcher.Invoke(() => UpdateUI(i,lbl));
+                if (stop)
+                    break;
 
             }
         }
 
-        private void UpdateUI(int i)
+        private void UpdateUI(int i, Label lbl)
         {
-            lblCount.Content = i;
+            lbl.Content = i;
+        }
+        //private void UpdateUI(int i)
+        //{
+        //    lblCount.Content = i;
+        //}
+
+        private void Btn2_Click(object sender, RoutedEventArgs e)
+        {
+            int max2 = Convert.ToInt32(txtMax1.Text);
+            Task.Factory.StartNew(() => DoWork(max2, 100,lblCount1));
+        }
+
+        private void btnStop_Click(object sender, RoutedEventArgs e)
+        {
+            stop = true;
         }
     }
 }
